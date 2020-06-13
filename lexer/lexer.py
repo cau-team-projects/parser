@@ -1,5 +1,3 @@
-import os
-import sys
 import lexer.table
 import lexer.tokens
 
@@ -59,11 +57,3 @@ class Lexer:
         else:
             print('failed to lex')
             return False
-
-with open(sys.argv[1], 'r') as infile:
-    debug = False
-    if 'DEBUG' in os.environ:
-        debug = (os.environ['DEBUG'] == '1')
-    lexer = Lexer(debug=debug)
-    for token in lexer.lex(infile):
-        print(token)
