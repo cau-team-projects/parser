@@ -10,8 +10,10 @@ class Lexer:
         self.tokenval = []
         self.table = lexer.table.table
         self.tokens = lexer.tokens.tokens
+    def mktoken(self):
+        return (self.tokens[self.state], ''.join(self.tokenval[:-1]))
     def prtoken(self):
-        print('<%s, %s>' % (self.tokens[self.state], ''.join(self.tokenval[:-1])))
+        print('<%s, %s>' % self.mktoken())
     def lex(self, infile):
         linenum = 0
         for line in infile:
@@ -35,7 +37,9 @@ class Lexer:
                             print('next state', self.state)
                     # if state is final state and unable to proceed
                     elif self.state in self.tokens:
-                        self.prtoken()
+                        if self.debug:
+                            self.prtoken()
+                        yield self.mktoken()
                         self.state = 0
                         self.tokenval = self.tokenval[-1:]
                         continue
@@ -45,7 +49,9 @@ class Lexer:
                         return False
                     break
         if self.state in self.tokens:
-            self.prtoken()
+            if self.debug:
+                self.prtoken()
+            yield self.mktoken()
             return True
         elif self.state == 0:
             if self.debug:
@@ -59,4 +65,5 @@ with open(sys.argv[1], 'r') as infile:
     if 'DEBUG' in os.environ:
         debug = (os.environ['DEBUG'] == '1')
     lexer = Lexer(debug=debug)
-    lexer.lex(infile)
+    for token in lexer.lex(infile):
+        print(token)
