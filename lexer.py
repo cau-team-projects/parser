@@ -27,7 +27,10 @@ class Lexer:
                         print('new char', char)
                     # if able to proceed
                     if char in self.table[self.state]: 
-                        self.state = self.table[self.state][char]
+                        if self.table[self.state][char] != -1:
+                            self.state = self.table[self.state][char]
+                        elif self.debug:
+                            print('pass')
                         if self.debug:
                             print('next state', self.state)
                     # if state is final state and unable to proceed
@@ -38,12 +41,22 @@ class Lexer:
                         continue
                     # if state is not final state and unable to proceed
                     else: 
-                        print('failed to lex at char [%s] at line %d[%s]' % (char, linenum, line))
+                        print('failed to lex at state [%d] at char [%s] at line %d[%s]' % (self.state, char, linenum, line))
                         return False
                     break
         if self.state in self.tokens:
             self.prtoken()
             return True
+        elif self.state == 0:
+            if self.debug:
+                print('state 0')
         else:
             print('failed to lex')
             return False
+
+with open(sys.argv[1], 'r') as infile:
+    debug = False
+    if 'DEBUG' in os.environ:
+        debug = (os.environ['DEBUG'] == '1')
+    lexer = Lexer(debug=debug)
+    lexer.lex(infile)
