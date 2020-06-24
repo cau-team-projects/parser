@@ -1,3 +1,4 @@
+START = 'START' # start symbol
 rules = {
     #   NONTERM, POPLEN
     0: ('START', 1), # START -> CODE

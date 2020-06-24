@@ -44,16 +44,19 @@ class Lexer:
                     # if state is not final state and unable to proceed
                     else: 
                         print('failed to lex at state [%d] at char [%s] at line %d[%s]' % (self.state, char, linenum, line))
-                        return False
+                        return
                     break
+        # token state
         if self.state in self.tokens:
             if self.debug:
                 self.prtoken()
             yield self.mktoken()
-            return True
+            return
+        # state 0
         elif self.state == 0:
             if self.debug:
                 print('state 0')
+        # wrong state
         else:
-            print('failed to lex')
-            return False
+            print('failed to lex due to wrong state')
+            return
