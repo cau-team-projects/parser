@@ -14,7 +14,7 @@ table = {
         None: ('REDUCE', 3),
         'CODE': ('GOTO', 5),
         'VDECL': ('GOTO', 2),
-        'FDECL', ('GOTO', 3),
+        'FDECL': ('GOTO', 3),
     },
     3: {
         'vtype': ('SHIFT', 4),
@@ -44,7 +44,7 @@ table = {
     9: {
         'vtype': ('REDUCE', 4),
         'id': ('REDUCE', 4),
-        'rbrace', ('REDUCE', 4),
+        'rbrace': ('REDUCE', 4),
         'if': ('REDUCE', 4),
         'while': ('REDUCE', 4),
         'for': ('REDUCE', 4),

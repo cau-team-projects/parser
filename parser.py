@@ -52,9 +52,11 @@ with open(sys.argv[1], 'r') as infile:
     if 'DEBUG' in os.environ:
         debug = (os.environ['DEBUG'] == '1')
     lexer = Lexer(debug=debug)
-    parser = Parser(lexer, debug=debug)
+    #parser = Parser(lexer, debug=debug)
     #print(next(parser.parse(infile)))
     #for res in parser.parse(infile):
     #    print('res', res)
-    print('Accepted:', parser.parse(infile))
+    #print('Accepted:', parser.parse(infile))
+    for token in lexer.lex(infile):
+        print(token)
 
