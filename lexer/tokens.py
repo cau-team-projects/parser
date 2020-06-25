@@ -60,8 +60,8 @@ tokens = {
     66: 'return',
     67: 'vtype',
     68: 'vtype',
-    69: 'id'
-    70: 'id'
+    69: 'id',
+    70: 'id',
     72: 'semi',
     73: 'comma'
 }
