@@ -25,56 +25,56 @@ rules = {
     # ARG -> vtype id MOREARGS
     8: ('ARG', 3), 
     # ARG -> epsilon
-    8: ('ARG', 0), 
+    9: ('ARG', 0), 
 
     # MOREARGS -> comma vtype id MOREARGS
-    9: ('MOREARGS', 4) 
+    10: ('MOREARGS', 4) 
     # MOREARGS -> epsilon
-    10: ('MOREARGS', 0) 
+    11: ('MOREARGS', 0) 
 
     # BLOCK -> STMT BLOCK
-    11: ('BLOCK', 2)
+    12: ('BLOCK', 2)
     # BLOCK -> epsilon
-    12: ('BLOCK', 0)
+    13: ('BLOCK', 0)
 
     # STMT -> VDECL
-    13: ('STMT', 1)
+    14: ('STMT', 1)
     # STMT -> ASSIGN semi
-    14: ('STMT', 2)
+    15: ('STMT', 2)
     # STMT -> if lparen COND rparen lbrace BLOCK rbrace ELSE
-    15: ('STMT', 8)
+    16: ('STMT', 8)
     # STMT -> while lparen COND rparen lbrace BLOCK rbrace
-    16: ('STMT', 7)
+    17: ('STMT', 7)
     # STMT -> for lparen ASSIGN semi COND semi ASSIGN rparen lbrace BLOCK rbrace
-    17: ('STMT', 11)
+    18: ('STMT', 11)
 
     # ELSE -> else lbrace BLOCK rbrace
-    18: ('ELSE', 4)
+    19: ('ELSE', 4)
     # ELSE -> epsilon
-    19: ('ELSE', 0)
+    20: ('ELSE', 0)
 
     # RHS -> EXPR
-    20: ('RHS', 1)
-    # RHS -> literal
     21: ('RHS', 1)
+    # RHS -> literal
+    22: ('RHS', 1)
     # EXPR -> TERM addsub EXPR
-    22: ('EXPR', 3)
+    23: ('EXPR', 3)
     # EXPR -> TERM
-    23: ('EXPR', 1)
+    24: ('EXPR', 1)
     # TERM -> FACTOR multdiv TERM
-    24: ('TERM', 3)
+    25: ('TERM', 3)
     # TERM -> FACTOR
-    25: ('TERM', 1)
+    26: ('TERM', 1)
     # FACTOR -> lparen EXPR rparen
-    26: ('FACTOR', 3)
+    27: ('FACTOR', 3)
     # FACTOR -> id
-    27: ('FACTOR', 1)
-    # FACTOR -> num
     28: ('FACTOR', 1)
-    # FACTOR -> float
+    # FACTOR -> num
     29: ('FACTOR', 1)
+    # FACTOR -> float
+    30: ('FACTOR', 1)
     # COND -> FACTOR comp FACTOR
-    30: ('COND', 3)
+    31: ('COND', 3)
     # RETURN -> return FACTOR semi
-    31: ('RETURN', 3)
+    32: ('RETURN', 3)
 }
