@@ -1,5 +1,5 @@
 table = {
-        0: {
+    0: {
         'vtype': ('SHIFT', 4),
         None: ('REDUCE', 3),
         'CODE': ('GOTO', 1),

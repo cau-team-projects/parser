@@ -19,7 +19,7 @@ class Parser():
         assert(action == 'GOTO')
         self.goto(state)
     def goto(self, state):
-        self.stack.push(state)
+        self.stack.append(state)
     def state(self):
         return self.stack[-1]
     def parse(self, infile):
@@ -27,6 +27,7 @@ class Parser():
             terminal, value = token
             while True:
                 state = self.state()
+                print('terminal', terminal, 'value', value, 'state', state)
                 if state in self.table and terminal in self.table[state]:
                     action, state_rule = self.table[self.state()][terminal]
                 else:
