@@ -14,8 +14,6 @@ class Parser():
         self.stack = [0]
     def reduce(self, rule):
         non_terminal, pop_count = self.rules[rule]
-        if non_terminal == self.START:
-            return True # accepted
         self.stack.pop(pop_count)
         action, state = self.table[self.state()][non_terminal]
         assert(action == 'GOTO')
@@ -38,9 +36,9 @@ class Parser():
                     self.goto(state_rule)
                     break # shift
                 elif action == 'REDUCE':
-                    accepted = self.reduce(state_rule)
-                    if accepted:
-                        return True
+                    self.reduce(state_rule)
+                elif action == 'ACCEPT':
+                    return True
                 else: # neither SHIFT nor REDUCE on terminal
                     print('Unknown action')
                     return False
