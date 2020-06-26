@@ -14,14 +14,14 @@ class Parser():
         self.stack = [0]
     def is_valid(self, state, symbol):
         if self.debug:
-            print(state, symbol, 'is valid?', state in self.table and symbol in self.table[state])
+            print('Is', state, symbol, 'valid?', state in self.table and symbol in self.table[state])
         return state in self.table and symbol in self.table[state]
     def reduce(self, rule):
         non_terminal, pop_count = self.rules[rule]
         if pop_count > 0:
             self.stack = self.stack[:-pop_count]
         if self.debug:
-            print('reduce', rule, 'pop', pop_count)
+            print('Reduce to', non_terminal, 'by rule', rule, 'popping', pop_count)
         state = self.state()
         if not self.is_valid(state, non_terminal):
             print('Invalid state or symbol')
@@ -32,7 +32,7 @@ class Parser():
         return True
     def goto(self, state):
         if self.debug:
-            print('goto', state)
+            print('Goto', state)
         self.stack.append(state)
     def state(self):
 #        if len(self.stack) < 1:
@@ -43,17 +43,17 @@ class Parser():
         while True:
             state = self.state()
             if self.debug:
-                print('stack:', self.stack)
-                print('terminal:', terminal, 'value:', value, 'state:', state)
+                print('Stack:', self.stack)
+                print('Terminal:', terminal, 'value:', value, 'state:', state)
             if self.is_valid(state, terminal): # non-empty entry of the table
                 action, state_rule = self.table[state][terminal]
                 # not shifting
             else: # empty entry of the table, something wrong!
-                print(self.is_valid(state, terminal), 'Failed to parse at', 'state:', state, 'terminal:', terminal)
+                print('Failed to parse at', 'state:', state, 'terminal:', terminal)
                 return False, False
             if action == 'SHIFT':
                 if self.debug:
-                    print('shift')
+                    print('Shift')
                 self.goto(state_rule)
                 return True, False # shift
             elif action == 'REDUCE':
@@ -69,6 +69,7 @@ class Parser():
 
     def parse(self, infile):
         for token in lexer.lex(infile):
+            print('-' * 40)
             ok, accepted = self.decide(token)
             if not ok:
                 return False
