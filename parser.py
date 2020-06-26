@@ -69,7 +69,8 @@ class Parser():
 
     def parse(self, infile):
         for token in lexer.lex(infile):
-            print('-' * 40)
+            if self.debug:
+                print('-' * 40)
             ok, accepted = self.decide(token)
             if not ok:
                 return False
