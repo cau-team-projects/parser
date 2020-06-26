@@ -11,94 +11,82 @@ class Parser():
         self.table = parser.table.table
         self.rules = parser.rules.rules
         self.START = parser.rules.START
-        self.stack = []
+        self.stack = [0]
     def is_valid(self, state, symbol):
-        print('is valid?', state, symbol)
+        if self.debug:
+            print(state, symbol, 'is valid?', state in self.table and symbol in self.table[state])
         return state in self.table and symbol in self.table[state]
     def reduce(self, rule):
-        state = self.state()
         non_terminal, pop_count = self.rules[rule]
-        self.stack = self.stack[:-pop_count]
-        print('reduce', rule, 'pop', pop_count)
+        if pop_count > 0:
+            self.stack = self.stack[:-pop_count]
+        if self.debug:
+            print('reduce', rule, 'pop', pop_count)
+        state = self.state()
         if not self.is_valid(state, non_terminal):
-            print('wrong state or symbol')
+            print('Invalid state or symbol')
             return False
         action, state = self.table[state][non_terminal]
         assert(action == 'GOTO')
         self.goto(state)
+        return True
     def goto(self, state):
-        print('goto', state)
+        if self.debug:
+            print('goto', state)
         self.stack.append(state)
     def state(self):
-        if len(self.stack) < 1:
-            return 0
+#        if len(self.stack) < 1:
+#            return 0
         return self.stack[-1]
-    def parse(self, infile):
-        for token in lexer.lex(infile):
-            terminal, value = token
-            while True:
-                print('stack:', self.stack)
-                state = self.state()
-                print('terminal:', terminal, 'value:', value, 'state:', state)
-                # non-empty entry of the table
-                if self.is_valid(state, terminal):
-                    action, state_rule = self.table[state][terminal]
-                    # not shifting
-                # empty entry of the table, something wrong!
-                else:
-                    print(self.is_valid(state, terminal), 'Failed to parse at', 'state:', state, 'terminal:', terminal)
-                    return False
-                if action == 'SHIFT':
-                    print('shift')
-                    self.goto(state_rule)
-                    break # shift
-                elif action == 'REDUCE':
-                    self.reduce(state_rule)
-                elif action == 'ACCEPT':
-                    return True
-                else: # neither SHIFT nor REDUCE on terminal
-                    print('Unknown action')
-                    return False
-        terminal = None
-        value = None
+    def decide(self, token):
+        terminal, value = token
         while True:
-            print('stack:', self.stack)
             state = self.state()
-            print('terminal:', terminal, 'value:', value, 'state:', state)
-            if state in self.table and terminal in self.table[state]:
+            if self.debug:
+                print('stack:', self.stack)
+                print('terminal:', terminal, 'value:', value, 'state:', state)
+            if self.is_valid(state, terminal): # non-empty entry of the table
                 action, state_rule = self.table[state][terminal]
                 # not shifting
-            else:
-                print('Failed to parse at', 'state:', state, 'terminal:', terminal)
-                return False
+            else: # empty entry of the table, something wrong!
+                print(self.is_valid(state, terminal), 'Failed to parse at', 'state:', state, 'terminal:', terminal)
+                return False, False
             if action == 'SHIFT':
+                if self.debug:
+                    print('shift')
                 self.goto(state_rule)
-                break # shift
+                return True, False # shift
             elif action == 'REDUCE':
-                self.reduce(state_rule)
+                ok = self.reduce(state_rule)
+                if not ok:
+                    print('Reduce failed')
+                    return False, False
             elif action == 'ACCEPT':
-                return True
+                return True, True
             else: # neither SHIFT nor REDUCE on terminal
                 print('Unknown action')
-                return False
+                return False, False
 
-        print('Not accepted after parse finished')
-        return False
+    def parse(self, infile):
+        for token in lexer.lex(infile):
+            ok, accepted = self.decide(token)
+            if not ok:
+                return False
+        ok, accepted = self.decide((None, None)) # terminal = None, value = None
+        if not ok:
+            return False
+        if not accepted:
+            print('Not accepted after parse finished')
+        return accepted
 
 with open(sys.argv[1], 'r') as infile:
-    debug = False
-    if 'DEBUG' in os.environ:
-        debug = (os.environ['DEBUG'] == '1')
-    lexer = Lexer(debug=debug)
+    parser_debug, lexer_debug = False, False
+    if 'PARSER_DEBUG' in os.environ:
+        parser_debug = (os.environ['PARSER_DEBUG'] == '1')
+    if 'LEXER_DEBUG' in os.environ:
+        lexer_debug = (os.environ['LEXER_DEBUG'] == '1')
 
-    #for res in parser.parse(infile):
-    #    print('res', res)
+    lexer = Lexer(debug=lexer_debug)
 
-    #print(next(parser.parse(infile)))
-
-    #for token in lexer.lex(infile):
-    #    print(token)
-
-    parser = Parser(lexer, debug=debug)
+    parser = Parser(lexer, debug=parser_debug)
     print('Accepted:', parser.parse(infile))
-    
