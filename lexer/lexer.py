@@ -29,8 +29,10 @@ class Lexer:
                     if char in self.table[self.state]: 
                         if self.table[self.state][char] != -1:
                             self.state = self.table[self.state][char]
-                        elif self.debug:
-                            print('pass')
+                        else:
+                            self.tokenval = self.tokenval[:-1]
+                            if self.debug:
+                                print('pass')
                         if self.debug:
                             print('next state', self.state)
                     # if state is final state and unable to proceed
